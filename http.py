@@ -106,6 +106,7 @@ class Main:
 		return str(self.db["main"])
 
 
+
 class Handler(BaseHTTPRequestHandler):
 	def send_page(self, string):
 		self.send_response(200)
