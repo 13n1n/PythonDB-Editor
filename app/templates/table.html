@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block script %}
+window.onload = function() {
+	var real = {
+		url:  "/json/{{name}}",
+		elId: "#tableform"
+	},  fake = {
+		url:  "/fake/{{name}}",
+		elId: "#fake_tableform"
+	};
+	
+	$.each([real, fake], function(i, el){
+		$.getJSON(el.url, function(json){
+			var vals = json["data"].slice(1),
+				headers = json["data"][0];
+			table = $(el.elId).handsontable({
+				data: vals,
+				minSpareRows: 1,
+				colHeaders: headers,
+				contextMenu: false
+			}).data("handsontable");
+		});
+		$(el.elId + "_submit").click(function() {
+			var data = table.getData();
+			$.post(el.url, JSON.stringify(data), function(resp){
+				console.log(resp);
+			});
+		});
+	});
+}
+{% endblock %}
+{% block content %}
+	<div id=tableform>
+		<input type=tableform_submit id=submit value=Update />
+	</div>
+{% endblock %}
+{% block fake_content %}
+	<div id=fake_tableform>
+		<input type=fake_tableform_submit id=fake_submit value=Update />
+	</div>
+{% endblock %}

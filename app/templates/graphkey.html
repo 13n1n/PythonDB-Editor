@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block style %}
+	.node {
+		position: fixed;
+		background-image: url('/icons.png');
+		width: 60px;
+		height: 60px;
+	}
+	
+	.border {
+		box-shadow: 0 0 10px 7px rgba(0,0,0,1);
+	}
+{% endblock %}
+{% block script %}
+	function process(x, y) {
+		var current = [];
+		$(".border").each(function(i, el){
+			current.push($(el).attr("name"));
+		});
+
+		if(result.length == 0) {
+			result = current;
+		} else {
+			result = intersect(result, current);
+		}
+		
+		if(result.length == {{len}}) {
+			$.post(window.location.href + "/auth", JSON.stringify(result), function(resp){
+				if(typeof resp.redirect != "undefined") {
+					window.location.href = resp.redirect;
+				}
+			});
+		}
+		
+		
+		shuffle(coord);
+		for(var y = 0; y < h; y++) {
+			for(var x = 0; x < w; x++) {
+				$("[name='"+x+"x"+y+"']").attr("style", cut(x*60, y*60) + ";" + position(coord[x][y][0],coord[x][y][1]));
+				$("[name='"+x+"x"+y+"']").attr("id", coord[x][y].join("x"));
+				$("[name='"+x+"x"+y+"']").attr("onmousemove", "select("+coord[x][y].join() + ")");
+			}
+		}
+	}
+
+	$("body").ready(function(){graphickey(true);});
+{% endblock %}

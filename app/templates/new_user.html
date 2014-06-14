@@ -1,0 +1,13 @@
+{% extends "auth.html" %}
+{% block extend %}
+	<tr>
+		<td>
+			<acronym title="Insert into fields like this: <table_name>:<n|w|r>, where n is none access, w is write and r - read">
+				<u>rigths</u>
+			</acronym>:
+		</td>
+		<td>
+			{{form.rght(size=80)}}
+		</td>
+	</tr>
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block style %}
+	.node {
+		position: fixed;
+		background-image: url('/icons.png');
+		width: 60px;
+		height: 60px;
+	}
+	
+	.border {
+		box-shadow: 0 0 10px 7px rgba(0,0,0,1);
+	}
+	
+	#admin, #security {
+		position: fixed;
+		bottom: 0px;
+	}
+	
+	#admin {
+		left: 0px;
+	}
+	
+	#security {
+		right: 0px;
+	}
+{% endblock %}
+{% block script %}
+	function serialize(arr) {
+		var res = [];
+		arr.each(function(i, el){
+			res.push($(el).attr("name"));
+		});
+		return JSON.stringify(res);
+	}
+
+	function process(x, y) {
+		var admin = $("#admin_vals"), security = $("#security_vals");
+		
+		$($(".border")[0])
+			.css("position", "static")
+			.css("float", "left")
+			.removeClass("border")
+			.unbind()
+			.appendTo((admin.children().length < {{len}}
+				? admin
+				: security));
+				
+		if(security.children().length == {{len}}) {
+			var data = {
+				"admin": {
+					"gpass": serialize(admin.children()),
+					"pass": $("input")[0].value
+				},
+				"security": {
+					"gpass": serialize(security.children()),
+					"pass": $("input")[1].value
+				}
+			};
+			
+			$.post("/set_up/post", JSON.stringify(data), function(resp) {
+				console.log(resp);
+				window.location.href = resp.redirect;
+			});
+		}
+	}
+
+	list = [[0, 0]];
+	$("body").ready(function(){graphickey(false);});
+{% endblock %}
+{% block content %}
+	<div id=admin>
+		<table>
+			<tr><td></td><td><h3>admin:</h3></td></tr>
+			<tr><td>graph:</td><td id=admin_vals></td></tr>
+			<tr><td>pswd:</td><td><input type=text value={{pswds[0]}} /></td></tr>
+		</table>
+	</div>
+	
+	<div id=security>
+		<table>
+			<tr><td></td><td><h3>security:</h3></td></tr>
+			<tr><td>graph:</td><td id=security_vals></td></tr>
+			<tr><td>pswd:</td><td><input type=text value={{pswds[1]}} /></td></tr>
+		</table>
+	</div>
+{% endblock %}
